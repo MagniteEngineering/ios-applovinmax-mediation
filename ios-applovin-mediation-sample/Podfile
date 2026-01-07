@@ -1,0 +1,8 @@
+platform :ios, '12.0'
+use_frameworks!
+
+workspace 'ios-applovin-mediation-sample'
+
+target 'ios-applovin-mediation-sample' do
+  pod 'magnite-applovin-mediation', :path => '../'
+end
