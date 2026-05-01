@@ -38,29 +38,42 @@ static NSString * const kAppIdKey = @"app_id";
     NSString *appID = parameters.serverParameters[kAppIdKey];
     if (appID.length != 0) {
         [self executeBlockOnMainThread:^{
-            [self setupMagniteSDKWithAppID:appID parameters:parameters];
+            [self setupMagniteSDKWithAppID:appID parameters:parameters completion:^(NSError *error) {
+                if (error) {
+                    completionHandler(MAAdapterInitializationStatusInitializedFailure, error.localizedDescription);
+                }
+                else {
+                    completionHandler(MAAdapterInitializationStatusInitializedSuccess, nil);
+                }
+            }];
         }];
-        completionHandler(MAAdapterInitializationStatusInitializedSuccess, nil);
     }
     else {
-        completionHandler(MAAdapterInitializationStatusInitializing, @"No Magnite AppID provided yet");
+        completionHandler(MAAdapterInitializationStatusInitializedFailure, @"No Magnite AppID provided yet");
     }
 }
 
-- (void)setupMagniteSDKWithAppID:(NSString *)appID parameters:(id<MAAdapterInitializationParameters>)parameters {
+- (void)setupMagniteSDKWithAppID:(NSString *)appID parameters:(id<MAAdapterInitializationParameters>)parameters completion:(void(^)(NSError *error))completion {
     MGNISDK *sdk = [MGNISDK sharedInstance];
-    sdk.appID = appID;
-    [sdk handleExtras:^(NSMutableDictionary<NSString *,id> *extras) {
-        if (parameters.hasUserConsent) {
-            extras[@"medPas"] = parameters.hasUserConsent;
+    [sdk enableMediationModeFor:@"AppLovin" version:kAdapterVersion];
+    
+    [sdk initializeWithAppID:appID completion:^(NSError *error) {
+        if (error) {
+            completion(error);
         }
-        
-        if (parameters.doNotSell) {
-            extras[@"medCCPA"] = parameters.doNotSell;
+        else {
+            [[MGNISDK sharedInstance] handleExtras:^(NSMutableDictionary<NSString *,id> *extras) {
+                if (parameters.hasUserConsent) {
+                    extras[@"medPas"] = parameters.hasUserConsent;
+                }
+                
+                if (parameters.doNotSell) {
+                    extras[@"medCCPA"] = parameters.doNotSell;
+                }
+            }];
+            completion(nil);
         }
     }];
-    
-    [sdk enableMediationModeFor:@"AppLovin" version:kAdapterVersion];
 }
 
 - (NSString *)SDKVersion {

@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "magnite-applovin-mediation"
-  spec.version      = "0.0.1"
+  spec.version      = "1.0.0"
   spec.summary      = "Magnite <-> AppLovin MAX iOS Mediation Adapter."
 
   spec.description  = <<-DESC
@@ -9,11 +9,11 @@ Pod::Spec.new do |spec|
                    DESC
 
   spec.homepage     = "https://www.magnite.com/"
-  spec.license      = { :type => "Apache License, Version 2.0", :file => "<LICENSE_FILENAME>" }
-  spec.author       = { "iOS Dev" => "<SUPPORT_EMAIL>" }
+  spec.license      = { :type => 'Commercial', :file => 'LICENSE.md' }
+  spec.author       = { 'Magnite' => 'sdk@magnite.com' }
   
   spec.platform     = :ios, "12.0"
-  spec.source       = { :git => "<PUBLIC_REPO_URL>", :tag => spec.version.to_s }
+  spec.source       = { :git => "https://github.com/MagniteEngineering/ios-applovinmax-mediation.git", :tag => spec.version.to_s }
   spec.source_files = "MagniteApplovinMediation/*.{h,m}"
 
   spec.frameworks   = "Foundation", "UIKit"
@@ -24,6 +24,6 @@ Pod::Spec.new do |spec|
   spec.user_target_xcconfig = { 'ONLY_ACTIVE_ARCH' => 'YES' } 
   
   spec.dependency "AppLovinSDK", ">= 12", "< 14"
-  spec.dependency "MagniteSDK", "~> 0.0.1"
+  spec.dependency "MagniteSDK", "~> 1.0"
 
 end
